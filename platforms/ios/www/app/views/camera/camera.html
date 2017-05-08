@@ -1,0 +1,39 @@
+<style>
+/* ionic style overrides */
+
+body {
+    background-color: transparent!important;
+}
+
+.pane {
+    background-color: transparent!important;
+}
+
+.ezar {
+}
+
+.bar.ezar {
+    opacity: 0.45;
+    height: 15%;
+}
+.view-container.disable-user-behavior {
+    background-color: transparent;
+}
+</style>
+<ion-pane>
+      <ion-header-bar class="bar-dark ezar">     
+      </ion-header-bar>
+      
+      <!-- abs position title above header. Allow header to be semi-transparent
+           without applying to title -->
+      <div id="title" class="title">HomeReady Camera</div>
+      
+      <ion-content scroll="false">
+      </ion-content>
+      
+      <div class="bar bar-dark ezar ezar-footer"></div>
+
+      <a id="snapshot" class="ezar-button" ng-click="snapshot()"></a>
+      <a id="revcamera" class="ezar-button" ng-click="reverseCamera()"></a>      
+
+</ion-pane>

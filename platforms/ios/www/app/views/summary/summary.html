@@ -1,0 +1,77 @@
+<style>
+    #toggleShow {
+        visibility: visible;
+    }
+
+    #li-anchor a {
+        color: #000000;
+    }
+
+    #heading-anchor a {
+        color: #0a6ebd;
+    }
+
+    #workHeading {
+        color: #AEAEAE;
+    }
+</style>
+
+<ion-view>
+    <ion-content overflow-scroll=“true” has-bouncing="true" padding="true" style="background:#edecec">
+        <div class="has-header">
+            <div class="item-body">
+                <section id="content" scroll-smooth>
+                    <div class="container">
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 id="heading-anchor">
+                <span ng-bind-html="activeJob.Property_Address_link__c" ng-click="$event.preventDefault();openMap($event,activeJob.Lat_Long__c,activeJob.Street_Address__c)"></span>
+              </h2>
+                                <p id="workHeading">Work Items associated with {{activeJob.Name}}
+                                </p>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover bootgrid-table status-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Type / Group</th>
+                                            <th class="table-underway" ng-click="gotoDetail('Underway')">
+                                                <a href="">Underway ({{activeJob.countUnderway}})</a>
+                                            </th>
+                                            <th class="table-completed" ng-click="gotoDetail('Completed')">
+                                                <a href="">Completed ({{activeJob.countCompleted}})</a>
+                                            </th>
+                                            <th class="table-deficient" ng-click="gotoDetail('Deficient')">
+                                                <a href="">Deficient ({{activeJob.countDeficient}})</a>
+                                            </th>
+                                            <th class="table-verified" ng-click="gotoDetail('Verified')">
+                                                <a href="">Verified ({{activeJob.countVerified}})</a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="group in activeJob.Groups | orderBy: 'group.Sequence__c':reverseGroup track by $id(group)">
+                                            <td ng-click="gotoDetailGroup(group)">
+                                                <a href="" style="color: #2196F3">{{group.Group_Name__c}}</a>
+                                            </td>
+                                            <td ng-show="group.countUnderway" ng-click="gotoDetailFilteredGroup(group,'Underway')" class="table-underway summary-rollup">{{group.countUnderway}}</td>
+                                            <td ng-hide="group.countUnderway" class=""></td>
+                                            <td ng-show="group.countCompleted" ng-click="gotoDetailFilteredGroup(group,'Completed')" class="table-completed summary-rollup">{{group.countCompleted}}</td>
+                                            <td ng-hide="group.countCompleted" class=""></td>
+                                            <td ng-show="group.countDeficient" ng-click="gotoDetailFilteredGroup(group,'Deficient')" class="table-deficient summary-rollup">{{group.countDeficient}}</td>
+                                            <td ng-hide="group.countDeficient" class=""></td>
+                                            <td ng-show="group.countVerified" ng-click="gotoDetailFilteredGroup(group,'Verified')" class="table-verified summary-rollup">{{group.countVerified}}</td>
+                                            <td ng-hide="group.countVerified" class=""></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

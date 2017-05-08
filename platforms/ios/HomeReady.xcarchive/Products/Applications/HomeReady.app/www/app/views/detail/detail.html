@@ -1,0 +1,399 @@
+<style>
+  #headingCss a {
+    color: #000;
+  }
+
+  div #btn-addCredit {
+    color: #ffffff;
+
+  }
+
+  .btnUnderway {
+    background-color: #2196f3;
+    color: #ffffff;
+
+  }
+
+  .btnCompleted {
+    background-color: #ffc107;
+    color: #ffffff;
+
+  }
+
+  .btnDeficient {
+    background-color: #f44336;
+    color: #ffffff;
+
+  }
+
+  .btnVerified {
+    background-color: #4caf50;
+    color: #ffffff;
+
+  }
+
+  .work-item-heading a {
+    font-size: 13px;
+    color: #424242;
+    position: relative;
+  }
+
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid blue;
+    border-bottom: 16px solid blue;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .accordion-toggle {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .panel-title {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .panel-collapse {
+    margin: 0;
+  }
+  .panel-open {
+    padding-bottom: 15px;
+  }
+  .panel {
+    margin-top: 0 !important;
+  }
+
+</style>
+
+<ion-view>
+  <ion-content overflow-scroll=“true” style="background:#edecec">
+    <div class="has-header">
+      <div class="item-body">
+        <section id="content" scroll-smooth>
+          <div class="container">
+            <div class="block-header">
+              <div class="row">
+                <h2 id="headingCss" ng-bind-html="activeJob.Property_Address_link__c" ng-click="$event.preventDefault();openMap($event,activeJob.Lat_Long__c,activeJob.Street_Address__c)"></h2>
+              </div>
+            </div>
+
+            <ul class="row">
+              <li class="col-25">
+                <span style="top:-10px; position:relative; padding-right:10px;" class="positive">Underway ({{currentGroup.countUnderway}})</span>
+                <label id="toggleUnderway" class="toggle toggle-positive">
+                  <input type="checkbox" ng-change="underwayFunc()" ng-model="activeFilter.Underway">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>
+              </li>
+              <li class="col-25">
+                <span style="top:-10px; position:relative; padding-right:10px;" class="energized">Complete ({{currentGroup.countCompleted}})</span>
+                <label id="toggleCompleted" class="toggle toggle-energized">
+                  <input type="checkbox" ng-change="completeFunc()" ng-model="activeFilter.Completed">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>
+              </li>
+              <li class="col-25">
+                <span style="top:-10px; position:relative; padding-right:10px;" class="assertive">Deficient ({{currentGroup.countDeficient}})</span>
+                <label id="toggleDeficient" class="toggle toggle-assertive">
+                  <input type="checkbox" ng-change="deficientFunc()" ng-model="activeFilter.Deficient">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>
+              </li>
+              <li class="col-25">
+                <span style="top:-10px; position:relative; padding-right:10px;" class="balanced">Verified ({{currentGroup.countVerified}})</span>
+                <label id="toggleVerified" class="toggle toggle-balanced">
+                  <input type="checkbox" ng-change="verifiedFunc()" ng-model="activeFilter.Verified">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>
+              </li>
+            </ul>
+
+            <div class="accordion">
+
+              <uib-accordion close-others="true">
+                <div uib-accordion-group class="panel-collapse" is-open="outerIndex" ng-repeat="group in activeGroups | orderBy: 'group.Sequence__c':reverseGroup track by $id(group) " ng-init="outerIndex = isOpenGroup(group.Group_Name__c)">
+                  <uib-accordion-heading id="accordianHeader{{$index}}">
+                    <div class="panel-heading" id="groupHeader{{$index}}" style="padding:10px;" ng-click="getActiveWorkItems(group.Group_Name__c,'isNotOpen',$index)">
+                      <h4>{{group.Group_Name__c}}
+                        <span class="detail-type">[{{group.Type__c}}]</span>
+                      </h4>
+                    </div>
+                  </uib-accordion-heading>
+                  <div id="loader"></div>
+                  <uib-accordion close-others="true">
+                    <div uib-accordion-group is-open="innerIndex" class="panel-collapse" is-disabled="!workItem.Verify_in_HomeReady__c" ng-repeat="workItem in group.WorkItems track by workItem.Id" ng-init="innerIndex = isOpenWorkItem(workItem.Id)">
+                      <uib-accordion-heading style="line-height: 30px;">
+                        <div class="panel-collapse" ng-click="getCurrentWorkItemData(workItem.Id,'isNotOpen')">
+                          <h4 class="work-item-heading" style="padding-bottom: 10px;">
+                            <div class="add-credit-button col-sm-3 text-right">
+                              <button id="btn-addCredit" ng-show="isVerifier && (workItem.Credit__c === null) && (workItem.Verify_in_HomeReady__c == true)" class="btn bgm-black btn-xs waves-effect" ng-click="showCreditModal(group,workItem.Id,$event)">Add Credit</button>
+                              <button id="btn-addCredit" ng-show="isVerifier && (workItem.Credit__c !== null)  && (workItem.Verify_in_HomeReady__c == true)" class="btn bgm-black btn-xs waves-effect" ng-click="showCreditModal(group,workItem.Id,$event)">Edit Credit</button>
+                            </div>
+                            <a>
+                              <!-- WORK ITEM INFO -->
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <strong>
+                                    Work Item #:</strong>
+                                  {{workItem.Name}}
+                                </div>
+                                <div class="col-sm-6">
+                                  {{workItem.Item_Name__c}}
+                                </div>
+                                <div class="col-sm-3 status-button text-right">
+                                  <button ng-show="workItem.Status__c == 'Underway'" class="btn btn-xs btnUnderway capitalize waves-effect">{{workItem.Status__c}}</button>
+                                  <button ng-show="workItem.Status__c == 'Completed'" class="btn btn-xs btnCompleted capitalize waves-effect">{{workItem.Status__c}}</button>
+                                  <button ng-show="workItem.Status__c == 'Deficient'" class="btn btn-xs btnDeficient  capitalize waves-effect">{{workItem.Status__c}}</button>
+                                  <button ng-show="workItem.Status__c == 'Verified'" class="btn btn-xs btnVerified capitalize waves-effect">{{workItem.Status__c}}</button>
+                                </div>
+                              </div>
+
+                              <div class="row mid-row">
+                                <div class="col-sm-9">
+                                  <strong>Note:</strong>
+                                  {{workItem.Comments__c}}
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <strong>Amount</strong>
+                                  {{workItem.Amount__c | currency}}
+                                </div>
+                                <div class="col-sm-6">
+                                  <strong>Qty:</strong>
+                                  {{workItem.Quantity__c}}
+                                </div>
+                                <div class="col-sm-3"></div>
+                              </div>
+                            </a>
+                          </h4>
+                        </div>
+                      </uib-accordion-heading>
+                      <div class="table-responsive parts-labor-table-wrapper">
+                        <table class="table table-condensed parts-labor-table table-bordered" style="overflow-y:scroll!important;height: 90px;">
+                          <tbody>
+                            <tr ng-repeat="product in currentWorkItem.Products_Materials__r.records">
+                              <td>
+                                <div class="dropdown">
+                                  <a class="btn-link waves-effect" ng-click="showProductImage(product)">
+                                    {{product.Description__c}}
+                                  </a>
+
+                                </div>
+                              </td>
+                              <td>
+                                <strong>Qty</strong>
+                                {{product.Qty__c}}
+                              </td>
+                              <td>
+                                <strong>ea</strong>
+                                ${{product.Price__c}}
+                              </td>
+                              <td>
+                                <strong>Labor</strong>
+                                ${{product.Labor__c}}
+                              </td>
+                              <td>
+                                ${{product.Total__c}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    <ion-scroll style="height: 90px;">
+                      <div class="table-responsive remove-margin">
+                        <table class="table-vmiddle bootgrid-table table table-striped table-condensed">
+                          <tbody>
+                            <tr ng-repeat="historyDetail in currentWorkItem.Work_Logs__r.records | orderBy:'Date__c'">
+                              <td>{{historyDetail.Date__c | date : 'MM/dd/yyyy @  hh:mm a'}}</td>
+                              <td>
+                                <span class="{{historyDetail.Item_Status__c}} capitalize bold">{{historyDetail.Item_Status__c}}</span>
+                                {{historyDetail.Description__c}}
+                              </td>
+                              <td>{{historyDetail.User__c}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </ion-scroll>
+                      <div class="row image-info-row">
+                        <div class="col-sm-6">
+                          <div class="image-title-text">Before</div>
+                          <!-- <span>{{windowSize.height()}} and {{windowSize.width()}}</span> -->
+                          &nbsp;
+                          <div class="btn-group btn-group-xs" role="group">
+                            <button type="button" class="btn {{defaultBgClass}} waves-effect" ng-click="showGroupPhotos(currentWorkItem.Group__c)">Group</button>
+                            <button type="button" class="btn {{activeClass}} waves-effect" ng-click="showWorkItemPhotos(currentWorkItem.Id)">Work Item</button>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-6 fix-padding-left">
+                          <div class="image-title-text">After</div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div>
+                            <ion-slide-box class="sliderBox" show-pager="false" delegate-handle="workItem_slider" does-continue="true">
+                              <ion-slide ng-if="(slidePhotos | filter: {Document_Type__c: 'Rehab Photo - Before'}).length == 0">
+                                <div class="box item-body">
+                                  <img class="full-image sliderPhoto" ng-src="/img/after-image-placeholder.jpg">
+                                </div>
+                              </ion-slide>
+                              <ion-slide ng-if="(slidePhotos | filter: {Document_Type__c: 'Rehab Photo - Before'}).length > 0" ng-repeat="photo in slidePhotos | filter: {Document_Type__c: 'Rehab Photo - Before'}" ng-init="photoBeforeIndex = $index">
+                                <div class="box item-body">
+                                  <label style="position:absolute;left:0;top:0;font-weight:bold;color:#ff9800">[{{$index+1}}/{{(slidePhotos | filter: {Document_Type__c: 'Rehab Photo - Before'}).length}}]</label>
+                                  <label style="position:absolute;right:0;top:0;width:200px;font-weight:bold;color:#ff9800">{{photo.CreatedDate| date : 'MM/dd/yyyy'}}
+                                    by
+                                    {{photo.CreatedBy.Name}}</label>
+                                  <img class="full-image sliderPhoto" ng-if="photo.File_URL__c != null" ng-src="{{photo.File_URL__c}}" ng-click="openModal(slidePhotos,photoBeforeIndex,photo.Document_Type__c)">
+                                  <button ng-if="workItemSlider" ng-click="movePhotoToGroup(currentWorkItem.Group__c,photo)" style="position:absolute;left:15%;bottom:5%">Move photo to [Group]</button>
+                                  <button ng-if="groupSlider" ng-click="movePhotoToWorkItem(currentWorkItem.Id,photo)" style="position:absolute;left:15%;bottom:5%">Move photo to [Work Item]</button>
+                                  <div ng-click="prevSlide()" ng-disabled="$first" style="position:absolute;top:0%;height:400px;width:100px">
+                                    <button class="icon button-clear buttonTop" ng-hide="$first" style="position:absolute;left:0%;weight:bold;font-size:40px;padding-bottom:45px">
+                                      <a class="ion-chevron-left"></a>
+                                    </button>
+                                  </div>
+                                  <div ng-click="nextSlide()" ng-disabled="$last" style="position:absolute;top:0%;right:0%;height:400px;width:100px">
+                                    <button class="icon button-clear buttonTop" ng-hide="$last" style="position:absolute;right:4%;weight:bold;font-size:40px;padding-bottom:45px">
+                                      <a class="ion-chevron-right"></a>
+                                    </button>
+                                  </div>
+                                </div>
+                              </ion-slide>
+                            </ion-slide-box>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-6" ng-show="!(imgURI)">
+                          <div>
+                            <ion-slide-box class="sliderBox" show-pager="false" delegate-handle="AfterPhoto" does-continue="true">
+                              <ion-slide ng-if="(currentWorkItem.Property_Documents__r.records | filter: {Document_Type__c: 'Rehab Photo - After'}).length == 0">
+                                <div class="box item-body">
+                                  <img class="full-image sliderPhoto" ng-src="/img/after-image-placeholder.jpg">
+                                </div>
+                              </ion-slide>
+                              <ion-slide
+                                ng-if="(currentWorkItem.Property_Documents__r.records | filter: {Document_Type__c: 'Rehab Photo - After'}).length > 0"
+                                ng-repeat="After_Photo in currentWorkItem.Property_Documents__r.records | filter: {Document_Type__c: 'Rehab Photo - After'}">
+                                <div class="box item-body">
+                                  <label style="position:absolute;left:0;top:0;font-weight:bold;color:#ff9800">[{{$index+1}}/{{(currentWorkItem.Property_Documents__r.records | filter: {Document_Type__c: 'Rehab Photo - After'}).length}}]</label>
+                                  <label style="position:absolute;width:200px;right:0;top:0;font-weight:bold;color:#ff9800">{{After_Photo.CreatedDate| date : 'MM/dd/yyyy'}}
+                                    by
+                                    {{After_Photo.CreatedBy.Name}}</label>
+                                  <img class="full-image sliderPhoto" ng-src="{{After_Photo.File_URL__c}}" err-src="/img/after-image-placeholder" ng-click="openModal(currentWorkItem.Property_Documents__r.records,$index,After_Photo.Document_Type__c)">
+                                  <div ng-if="!($first)" ng-click="prevAfterPhotoSlide()" style="position:absolute;top:0%;height:400px;width:100px">
+                                    <button class="icon button-clear buttonTop"  ng-hide="$first" style="position:absolute;left:0%;weight:bold;font-size:40px;padding-bottom:45px">
+                                      <a class="ion-chevron-left"></a>
+                                    </button>
+                                  </div>
+                                  <div ng-if="!($last)" ng-click="nextAfterPhotoSlide()" style="position:absolute;top:0%;right:0%;height:400px;width:100px">
+                                    <button class="icon button-clear buttonTop"  ng-hide="$last" style="position:absolute;right:2%;weight:bold;font-size:40px;padding-bottom:45px">
+                                      <a class="ion-chevron-right"></a>
+                                    </button>
+                                  </div>
+                                </div>
+                              </ion-slide>
+                            </ion-slide-box>
+                          </div>
+                        </div>
+                        <div class="col-sm-6" ng-show="(workItem.Status__c == 'Underway')&&(imgURI)">
+                          <div class="thumbnail defaultImage">
+                            <img class="full-image photo-responsive" ng-model="imgURI" ng-show="imgURI" ng-src="{{imgURI}}" alt="">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row image-info-row-bottom">
+                        <div class="col-sm-6"></div>
+
+                        <div class="col-sm-6 fix-padding-left">
+                          <div ng-show="!iPad && (workItem.Status__c == 'Underway')">
+                            <input type="file" name="file" id="fileInput" accept=".png, .jpg, .jpeg" class="custom-file-input" onchange="angular.element(this).scope().selectImage(this.files)"/>
+                          </div>
+                          <button ng-show="iPad && (workItem.Status__c == 'Underway')" class="btn bgm-gray btn-icon-text btn-xs waves-effect" ng-click="testCamera(workItem.Id)">
+                            <i class="zmdi zmdi-camera"></i>
+                            Take Photo
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row job-status-row" ng-show="!isVerifier && (workItem.Status__c == 'Completed' || workItem.Status__c == 'Deficient')">
+                        <div class="col-sm-6 status-change-section">
+                          <button class="btn mark-as-underway capitalize btn-sm waves-effect" ng-click="markAsUnderway(workItem,markCompleteNotes,$parent.$index,$index)">Mark Underway</button>
+                        </div>
+                        <div class="col-sm-6 input-group">
+                          <div class="fg-line">
+                            <input type="text" maxlength="255" ng-model="markCompleteNotes" placeholder="Note with status change"/>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-3"></div>
+                      </div>
+
+                      <div class="row job-status-row" ng-show="isVerifier && (workItem.Status__c == 'Completed' || workItem.Status__c == 'Deficient' || workItem.Status__c == 'Verified')">
+                        <div class="col-sm-6 status-change-section">
+                          <button class="btn mark-as-deficient capitalize btn-sm waves-effect" ng-show="isVerifier && (workItem.Status__c == 'Completed' || workItem.Status__c == 'Verified')" ng-click="markAsDeficient(workItem,markCompleteNotes,$parent.$index,$index)">Mark Deficient</button>
+                          <button class="btn mark-as-verified capitalize btn-sm waves-effect" ng-show="isVerifier && (workItem.Status__c == 'Completed' || workItem.Status__c == 'Deficient')" ng-click="markAsVerified(workItem,markCompleteNotes,$parent.$index,$index)">Mark Verified</button>
+                        </div>
+                        <div class="col-sm-6 input-group">
+                          <div class="fg-line">
+                            <input type="text" maxlength="255" ng-model="markCompleteNotes" class="form-control" placeholder="Note with status change">
+                          </div>
+                        </div>
+                        <div class="col-sm-3"></div>
+                      </div>
+
+                      <div class="row job-status-row" ng-show="workItem.Status__c == 'Underway'">
+                        <div class="col-sm-6 status-change-section">
+                          <button class="btn mark-as-completed capitalize btn-sm waves-effect" ng-click="markAsCompleted(workItem,markCompleteNotes,imgURI,$parent.$index,$index)">Mark Completed</button>
+                        </div>
+                        <div class="col-sm-6 input-group">
+                          <div class="fg-line">
+                            <input type="text" maxlength="255" ng-model="markCompleteNotes" class="form-control" placeholder="Note with status change">
+                          </div>
+                        </div>
+                        <div class="col-sm-3"></div>
+                      </div>
+
+                    </uib-accordion>
+                  </div>
+                </uib-accordion>
+              </div>
+              <!-- END CARD -->
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </ion-content>
+  </ion-view>

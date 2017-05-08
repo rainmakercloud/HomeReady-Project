@@ -1,0 +1,55 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "com.ezartech.ezar.videooverlay": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "com.ezartech.ezar.snapshot": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.ionicframework.homeready999185"
+        }
+    }
+}

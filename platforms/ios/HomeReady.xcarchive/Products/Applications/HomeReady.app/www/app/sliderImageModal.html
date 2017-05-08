@@ -1,0 +1,42 @@
+
+      <div style="display:block;top:0;bottom:0;left:0;right:0;width:100%;margin-top:60px!important;margin-bottom:60px!important" role="dialog">
+            <div class="modal-body">
+              <ion-slide-box active-slide="modalActiveIndex" show-pager="false" does-continue="true" style="height:100%;width:100%">
+                <ion-slide ng-repeat="property in photoDoc">
+                  <div class="box">
+                    <label style="position:absolute;left:0;top:0;font-weight:bold;color:#ff9800">[{{$index+1}}/{{(photoDoc.length)}}]</label>
+                    <center  id="rotateImage{{$index}}">
+                      <img id="sliderImage{{$index}}" ng-src="{{property.File_URL__c}}" style="position:relative;height:500px;width:500px;">
+                    </center>
+                    <div ng-click="prevImageSlide($index)" style="position:absolute;top:0%;height:400px;width:100px">
+                        <button class="icon button-clear" ng-hide="$first" style="position:absolute;left:0%;top:40%;weight:bold;font-size:40px;">
+                          <a class="ion-arrow-left-c"></a>
+                      </button>
+                    </div>
+                    <div ng-click="nextImageSlide($index)" style="position:absolute;top:0%;right:0%;height:400px;width:100px">
+                        <button class="icon button-clear" ng-hide="$last" style="position:absolute;right:4%;top:40%;weight:bold;font-size:40px">
+                          <a class="ion-arrow-right-c"></a>
+                      </button>
+                    </div>
+                    <div class="row" style="bottom:0;position:relative;z-index:12">
+                      <div style="font-size:40px;margin:20px" ng-click="closeModal()">
+                        <a class="icon ion-close"></a>
+                      </div>
+                      <div style="font-size:40px;margin:20px" ng-click="zoomModal($index)">
+                        <a class="icon ion-plus"></a>
+                      </div>
+                      <div style="font-size:40px;margin:20px" ng-click="minusModal($index)">
+                        <a class="icon ion-minus"></a>
+                      </div>
+                      <div ng-click="rotateClockWise($index)" style="font-size:40px;margin:20px">
+                        <a class="icon ion-forward"></a>
+                      </div>
+                      <div ng-click="rotateAntiClockWise($index)" style="font-size:40px;margin:20px">
+                        <a class="icon ion-reply"></a>
+                      </div>
+                    </div>
+                  </div>
+                </ion-slide>
+              </ion-slide-box>
+            </div>
+      </div>

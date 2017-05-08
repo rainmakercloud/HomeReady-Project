@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="dist/css/swiper.min.css">
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    <link href="css/app_2.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Vendor CSS -->
+    <link href="app/vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" rel="stylesheet">
+    <link href="app/oauth/oauthcallback.html">
+
+    <!--Vendors Js -->
+
+    <script src="app/vendors/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="app/vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+    <!--<script src="js/app.js"></script>-->
+    <script src="app/vendors/appmin.js"></script>
+
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="app/app.js"></script>
+    <script src="lib/ionic-native/ionic.native.js"></script>
+    <script src="lib/angular/angular-ui-bootstrap-modal.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/angular-sanitize.js"></script>
+    <script src="js/ui-bootstrap-tpls-2.3.1.js"></script>
+
+    <!--Factory Js-->
+    <script src="app/Factories/salesforce.js"></script>
+    <script src="lib/angular-idle.min.js"></script>
+    <script src="lib/localforage/dist/localforage.js"></script>
+    <script src="lib/localforage-cordovasqlitedriver/dist/localforage-cordovasqlitedriver.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="dist/js/swiper.js"></script>
+
+    <!--Ionic views-->
+    <script src="app/views/login/login.js"></script>
+
+    <script src="app/views/landing/landing.js"></script>
+    <script src="app/views/summary/summary.js"></script>
+    <script src="app/views/detail/detail.js"></script>
+    <script src="app/views/camera/camera.js"></script>
+    <script src="homereadyConfig.js"></script>
+    <script src="app/views/login/launchHomeready.js"></script>
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above-->
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <script type="text/javascript" src="css/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-datepicker3.css"/>
+    <style>
+      #includeJobAnchor a {
+        color: #989898;
+      }
+      #li-anchor a {
+        color:black;
+      }
+
+    </style>
+
+  </head>
+
+  <body ng-app="homeready" class="platform-ios platform-cordova platform-webview">
+        <ion-nav-bar class="sidebar-toggled">
+          <ion-nav-back-button></ion-nav-back-button>
+          <ion-nav-buttons side="left"></ion-nav-buttons>
+          <header id="header" class="clearfix" data-ma-theme="blue">
+            <ul class="h-inner">
+              <li ng-if="menuToggle" class="hi-trigger ma-trigger" data-ma-action="sidebar-open" data-ma-target="#sidebar">
+                <div class="line-wrap">
+                  <div class="line top"></div>
+                  <div class="line center"></div>
+                  <div class="line bottom"></div>
+                </div>
+              </li>
+              <li class="hi-logo">
+                <a ng-click="backToLandingView()"><img src="img/homeready-logo.png"/></a>
+              </li>
+
+              <li class="pull-right">
+                <ul class="hi-menu">
+                  <li ng-show="backButton" ng-click="backToState()">
+                    <a data-trigger="hover" data-toggle="popover" data-placement="bottom" data-original-title="Back">
+                      <i class="him-icon zmdi zmdi-arrow-left"></i>
+                    </a>
+                  </li>
+                  <li ng-show="walkThrough"  ng-click="walkThroughFunc()">
+                    <a href="" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-original-title="Walkthrough">
+                      <i class="him-icon zmdi zmdi-rotate-left"></i>
+                    </a>
+                  </li>
+                  <li  ng-show="outSync && iPad">
+                    <a href="" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-original-title="Out of Sync">
+                      <i class="him-icon zmdi zmdi-refresh-sync-off header-icon-red"></i>
+                    </a>
+                  </li>
+                  <li ng-show="inSync && iPad">
+                    <a href="" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-original-title="In Sync">
+                      <i class="him-icon zmdi zmdi-refresh-sync text header-icon-green"></i>
+                    </a>
+                  </li>
+                  <li ng-show="syncing && iPad">
+                    <a href="" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-original-title="Sync in Progress">
+                      <i class="him-icon zmdi zmdi-refresh-sync-alert header-icon-yellow"></i>
+                    </a>
+                  </li>
+                  <li class="dropdown">
+                    <a data-toggle="dropdown" href="" aria-expanded="false">
+                      <i ng-show="uat=='Test'" class="him-icon zmdi zmdi-account" style="color:red;"></i>
+                      <i ng-hide="uat=='Test'" class="him-icon zmdi zmdi-account" style="color:blue;"></i>
+
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg pull-right">
+                      <div class="list-group">
+                        <div class="lg-header">
+                          {{user.Username}}
+                          <span ng-show="uat">({{uat}})</span>
+                        </div>
+                        <div class="sm-body">
+                          <a class="list-group-item media" href="">
+                            <div class="media-body">
+                              <div ng-click="logout()" class="lgi-heading">Log Out</div>
+                            </div>
+                          </a>
+
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li ng-show="iPad">
+                    <span style="top:-10px; position:relative; padding-right:10px;color:white;">Toggle Auto-Sync</span>
+                    <label class="toggle toggle-balanced">
+                      <input ng-disabled="offlineMode || syncing" type="checkbox" ng-change="toggleSyncFunc()" ng-model="toggleSync">
+                      <div class="track">
+                        <div class="handle"></div>
+                      </div>
+                    </label>
+                  </li>
+
+                </ul>
+              </li>
+            </ul>
+          </header>
+        </ion-nav-bar>
+        <ion-nav-view></ion-nav-view>
+        <aside ng-show="menuOverlay" id="sidebar" class="sidebar">
+                    <ul class="main-menu">
+                      <li id="li-anchor">
+                        <a href="" class="selected-project">
+                          <i class="zmdi zmdi-folder-outline"></i>
+                          <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="Job Name">
+                            <span id="li-anchor"  ng-bind-html="activeJob.Project_Type__c"></span>
+                          </strong><br/>
+                          <span class="job-name" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="Job Category">
+                            {{activeJob.Services_and_Supplies__r.Name}}
+                          </span><br/>
+                          <span class="job-name" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="Job Number">
+                            {{activeJob.Name}}
+                          </span><br/>
+                          <span class="" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="Partner">
+                            {{activeJob.vendor}}
+                          </span><br/>
+                          <span class="" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="Job Amount">
+                            {{activeJob.Original_Approved_Cost__c | currency}}
+                          </span>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a class="menu-dates">
+                          <i class="zmdi zmdi-calendar"></i>
+                          <span ng-show="activeJob.total_contracted_days === '?'">
+                            Job was
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Contracted_Completion_Date__c}}">Due</strong>
+                            ?
+                            days ago
+                          </span>
+                          <span ng-show="activeJob.total_contracted_days < 0 && activeJob.total_contracted_days != -1">
+                            Job was
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Contracted_Completion_Date__c}}">Due</strong>
+                            {{-activeJob.total_contracted_days}}
+                            days ago
+                            <i class="zmdi zmdi-alert-octagon text-danger icon-right" data-trigger="hover" data-toggle="popover" data-placement="left" title="" data-original-title="Job is {{-activeJob.total_contracted_days}} days overdue!"></i>
+                          </span>
+                          <span ng-show="activeJob.total_contracted_days == -1">
+                            Job was
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Contracted_Completion_Date__c}}">Due</strong>
+                            {{-activeJob.total_contracted_days}}
+                            day ago
+                            <i class="zmdi zmdi-alert-octagon text-danger icon-right" data-trigger="hover" data-toggle="popover" data-placement="left" title="" data-original-title="Job is 1 day overdue!"></i>
+                          </span>
+                          <span ng-show="activeJob.total_contracted_days == 1">
+                            Job is
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Contracted_Completion_Date__c}}">Promised</strong>
+                            in
+                            {{activeJob.total_contracted_days}}
+                            day
+                          </span>
+                          <span ng-show="activeJob.total_contracted_days >= 0 && activeJob.total_contracted_days != 1">
+                            Job is
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Contracted_Completion_Date__c}}">Promised</strong>
+                            in
+                            {{activeJob.total_contracted_days}}
+                            days
+                          </span>
+                          <br/>
+                          <span ng-hide="includeChangeOrders || includeAllJobs">
+                            Job is
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            on
+                            <div class="input-group form-group">
+                              <span class="input-group-addon">
+                                <i class="zmdi zmdi-calendar"></i>
+                              </span>
+                              <div class="form-group">
+                                <!-- Date input -->
+                                <label class="control-label" for="date"></label>
+                                <input class="form-control" id="date" ng-model="changeExpectedDate" ng-change="ChangedExpectedDate(changeExpectedDate,activeJob.Id)" name="date" placeholder="Click here..." type="text"/>
+                              </div>
+                            </div>
+                          </span>
+                          <span ng-show="(includeChangeOrders || includeAllJobs) && activeJob.total_expected_days === '?'">
+                            Job was
+                            <strong data-tr igger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            ?
+                            days ago
+                          </span>
+                          <span ng-show="(includeChangeOrders || includeAllJobs) && activeJob.total_expected_days < 0 && activeJob.total_expected_days != -1">
+                            Job was
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            {{-activeJob.total_expected_days}}
+                            days ago
+                            <i class="zmdi zmdi-alert-octagon text-danger icon-right" data-trigger="hover" data-toggle="popover" data-placement="left" title="" data-original-title="Job is {{-activeJob.total_expected_days}} days overdue!"></i>
+                          </span>
+                          <span ng-show="(includeChangeOrders || includeAllJobs) && activeJob.total_expected_days == -1">
+                            Job was
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            {{-activeJob.total_expected_days}}
+                            day ago
+                            <i class="zmdi zmdi-alert-octagon text-danger icon-right" data-trigger="hover" data-toggle="popover" data-placement="left" title="" data-original-title="Job is 1 day overdue!"></i>
+                          </span>
+                          <span ng-show="(includeChangeOrders || includeAllJobs) && activeJob.total_expected_days == 1">
+                            Job is
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            in
+                            {{activeJob.total_expected_days}}
+                            day
+                          </span>
+                          <span ng-show="(includeChangeOrders || includeAllJobs) && activeJob.total_expected_days >= 0 && activeJob.total_expected_days != 1">
+                            Job is
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Expected_Completion_Date__c}}">expected</strong>
+                            in
+                            {{activeJob.total_expected_days}}
+                            days
+                          </span>
+                          <br/>
+                          <span ng-show="activeJob.total_start_days !== '?'">
+                            Job
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Start_Date__c}}">started</strong>
+                            {{activeJob.total_start_days}}
+                            days ago
+                          </span>
+                          <span ng-show="activeJob.total_start_days == '?'">
+                            Job
+                            <strong data-trigger="hover" data-toggle="popover" data-placement="bottom" title="" data-original-title="{{activeJob.Start_Date__c}}">started</strong>
+                            ?
+                            days ago
+                          </span>
+                          <br/>
+
+                        </a>
+                      </li>
+
+
+
+                      <li ng-if="showChangeOrder" class="menu-item-no-icon" style="margin:10px">
+                          <div class="checkbox m-b-15">
+                            <label>
+                              <input type="checkbox"  ng-disabled="includeAllJobs" ng-model="includeChangeOrders" ng-checked="includeAllJobs" ng-change="includeChangeOrder(activeJob,activeProjects,includeChangeOrders)">
+                              <i class="input-helper"></i>
+                              Include Changes Orders ({{activeChangeOrders.length}})
+                            </label>
+                          </div>
+                      </li>
+
+                      <li class="menu-item-no-icon" style="margin:20px">
+                        <div class="row">
+                          <div class="col-10">
+                              <label class="checkbox m-b-15">
+                                <input ng-model="includeAllJobs" type="checkbox" ng-change="includeAllJob(activeJob,activeProjects,includeAllJobs)"  value="">
+                                <i class="input-helper"></i>
+                              </label>
+                          </div>
+                          <div class="col-55">
+                            <label style="padding:10px;">Include all Jobs ({{activeProjects.length}})</label>
+                          </div>
+                          <div class="col-10" ng-click="submenu = !submenu">
+                            <label style="padding:10px;" ng-class="{'icon ion-minus': submenu, 'icon ion-plus': !submenu }"></label>
+                          </div>
+                        </div>
+
+
+
+                          <center>
+                            <ul ng-show="submenu">
+                              <li ng-repeat="job in JobArray[activeJobArrayIndex].Job | orderBy:'Start_Date__c'">
+                                <a ng-click="$event.preventDefault();switchJob(job)" style="color:#989898">
+                                  <span id="includeJobAnchor" ng-bind-html="job.Project_Type__c"></span>:
+                                  {{job.Services_and_Supplies__c}}
+                                  <br/>{{job.vendor}}
+                                </a>
+                              </li>
+                            </ul>
+                          </center>
+                      </li>
+                    </ul>
+              </aside>
+  </body>
+</html>

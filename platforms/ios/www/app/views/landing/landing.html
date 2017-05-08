@@ -1,0 +1,251 @@
+<style>
+    .swiper-container {
+        width: 480px;
+        height: 600px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .swiper-slide {
+        width: 380px;
+        height: 600px;
+        background-position: center;
+    }
+
+    #toggleShow {
+        visibility: hidden;
+    }
+</style>
+<ion-view view-title="Landing" style="background: #edecec">
+    <ion-content overflow-scroll="true">
+
+        <section id="main">
+        <div ng-hide="JobArray.length" style="padding:15px;text-align:center;">
+          <h4>No Jobs Loaded</h4>
+          <span>Please send Jobs from HomeWorx<span>
+        </div>
+            <section id="">
+                <div class="container" style="padding-right:20px;">
+                    <div class="row" ng-show="JobArray.length > 0">
+                        <div class="col-sm-12 work-item-rollup">
+                            <small>Rollup of all Work Items for ({{user.Username}})</small>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-primary" style="width: {{percent.Underway}}%" data-toggle="popover" data-placement="top" title="" data-original-title="{{percent.Underway | number:1}}% Underway">
+                                    <span>{{count.Underway}}
+                    Underway</span>
+                                </div>
+
+                                <div class="progress-bar progress-bar-warning" style="width: {{percent.Completed}}%" data-toggle="popover" data-placement="top" title="" data-original-title="{{percent.Completed | number:1}}% Complete">
+                                    <span>{{count.Completed}}
+                    Complete</span>
+                                </div>
+
+                                <div class="progress-bar progress-bar-danger" style="width: {{percent.Deficient}}%" data-toggle="popover" data-placement="top" title="" data-original-title="{{percent.Deficient | number:1}}% Deficient">
+                                    <span>{{count.Deficient}}
+                    Deficient</span>
+                                </div>
+
+                                <div class="progress-bar progress-bar-success" style="width: {{percent.Verified}}%" data-toggle="popover" data-placement="top" title="" data-original-title="{{percent.Verified | number:1}}% Verified">
+                                    <span>{{count.Verified}}
+                    Verified</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="row">-->
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4" ng-repeat="jobs in JobArray | orderBy:'Street_Address__c'">
+                        <div class="swiper-container">
+                            <div class=" swiper-wrapper">
+                                <div class="swiper-slide" ng-repeat="job in jobs.Job | orderBy:'job.CreatedDate'">
+
+                                    <!-- Custom header -->
+                                    <div class="card">
+                                        <div class="card-header large-header bgm-gray" style="color:white; height:100px;">
+                                            <!-- 5574 E. Mountain St., Charlotte, NC, 28211-414 -->
+                                            <!-- Please refer the Colors page in User Interface for more color classes -->
+                                            <a style="color: white" ng-click="summary(job,jobs.Job)">
+                                                <h2>
+                          <span ng-show="jobs.flag" class="card-number-indicator">[{{$index+1}}/{{jobs.Job.length}}]</span>
+                          <span ng-bind-html="job.Property_Address_link__c"></span>
+                        </h2>
+                                                <p>
+                                                    <span ng-bind-html="job.Project_Type__c"></span>
+                                                    <span>:
+                            {{job.Services_and_Supplies__r.Name}}</span>
+                                                    <span>
+                            ({{job.Name}})</span>
+                                                </p>
+                                            </a>
+
+                                            <button deprecate class="btn bgm-bluegray btnDeprecate btn-float waves-effect" ng-click="deprecate(job)" style=" position: fixed!important; top:0!important; left:350px!important">
+                          <i class="zmdi zmdi-close"></i>
+                        </button>
+
+
+                                        </div>
+
+                                        <a ng-click="summary(job,jobs.Job)">
+                                            <img data-ng-src="{{job.Property_Documents__r.records[0].File_URL__c}}" style="max-height:190px;min-height:190px;width:380px;" class="img-responsive" alt="">
+                                        </a>
+                                        <div class="card-body card-padding">
+
+                                            <div class="table-responsive row" style="">
+                                                <table class="table table-striped table-condensed">
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Vendor:</td>
+                                                            <!-- <td>Jake R. Vendor</td> -->
+
+                                                            <td>{{job.vendor}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Amount:</td>
+                                                            <td>
+                                                                {{job.Original_Approved_Cost__c | currency}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Dates:</td>
+                                                            <td>
+                                                                <span ng-show="job.total_contracted_days == '?'">Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="?">Due</strong>
+                                  ? days ago
+                                </span>
+                                                                <span ng-show="(job.total_contracted_days < 0 && job.total_contracted_days != -1)">Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Contracted_Completion_Date__c}}">Due</strong>
+                                  {{-job.total_contracted_days}}
+                                  days ago
+                                  <a href="" class="overdue-alert">
+                                    <i class="zmdi zmdi-alert-octagon text-danger" data-toggle="popover" data-placement="left" title="Job is {{-job.total_contracted_days}} days overdue!"></i>
+                                  </a>
+                                </span>
+                                                                <span ng-show="job.total_contracted_days == -1">Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Contracted_Completion_Date__c}}">Due</strong>
+                                  {{-job.total_contracted_days}}
+                                  day ago
+                                  <a href="" class="overdue-alert">
+                                    <i class="zmdi zmdi-alert-octagon text-danger" data-toggle="popover" data-placement="left" title="Job is 1 day overdue!"></i>
+                                  </a>
+                                </span>
+                                                                <span ng-show="job.total_contracted_days  == 1">Job is
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Contracted_Completion_Date__c}}">Promised</strong>
+                                  in
+                                  {{job.total_contracted_days}}
+                                  day
+                                </span>
+                                                                <span ng-show="job.total_contracted_days  >= 0 && job.total_contracted_days != 1">Job is
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Contracted_Completion_Date__c}}">Promised</strong>
+                                  in
+                                  {{job.total_contracted_days}}
+                                  days
+                                </span>
+
+                                                                <br/>
+                                                                <span ng-show="job.total_expected_days == '?'">
+                                  Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="?">expected</strong>
+                                  ? days ago
+                                </span>
+                                                                <span ng-show="job.total_expected_days < 0 && job.total_expected_days != -1">
+                                  Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Expected_Completion_Date__c}}">expected</strong>
+                                  {{-job.total_expected_days}}
+                                  days ago
+                                </span>
+                                                                <span ng-show="job.total_expected_days == -1">
+                                  Job was
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Expected_Completion_Date__c}}">expected</strong>
+                                  {{-job.total_expected_days}}
+                                  day ago
+                                </span>
+                                                                <span ng-show="job.total_expected_days ==1">
+                                  Job is
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Expected_Completion_Date__c}}">expected</strong>
+                                  in
+                                  {{job.total_expected_days}}
+                                  day
+                                </span>
+                                                                <span ng-show="job.total_expected_days >= 0 && job.total_expected_days !=1">
+                                  Job is
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Expected_Completion_Date__c}}">expected</strong>
+                                  in
+                                  {{job.total_expected_days}}
+                                  days.
+                                </span>
+                                                                <br/>
+                                                                <span ng-show="job.total_start_days !== '?'">
+                                  Job
+                                  <strong data-toggle="popover" data-placement="bottom" title="{{job.Start_Date__c}}">started</strong>
+                                  {{job.total_start_days}}
+                                  days ago
+                                </span>
+                                                                <span ng-show="job.total_start_days == '?'">
+                                  Job
+                                  <strong data-toggle="popover" data-placement="bottom" title="?">started</strong>
+                                  ? days ago
+                                </span>
+
+                                                            </td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <a ng-click="summary(job,jobs.Job)" class="btn bgm-gray waves-effect open-job">Open Job
+                        <i class="zmdi zmdi-arrow-right"></i>
+                      </a>
+
+                                            <ul class="actions">
+                                                <li>
+                                                    <a href="">
+                                                        <i class="zmdi zmdi-refresh-sync-off" ng-show="outSync" data-toggle="popover" data-placement="bottom" title="Out of Sync"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-primary" style="width: {{job.percentUnderway}}%" data-toggle="popover" data-placement="top" title="{{job.percentUnderway | number:0}}% Underway">
+                                                <span>{{job.countUnderway}}
+                          Underway</span>
+                                            </div>
+
+                                            <div class="progress-bar progress-bar-warning" style="width: {{job.percentCompleted}}%" data-toggle="popover" data-placement="top" title="{{job.percentCompleted | number:0}}% Complete">
+                                                <span>{{job.countCompleted}}
+                          Complete</span>
+                                            </div>
+
+                                            <div class="progress-bar progress-bar-danger" style="width: {{job.percentDeficient}}%" data-toggle="popover" data-placement="top" title="{{job.percentDeficient | number:0}}% Deficient">
+                                                <span>{{job.countDeficient}}
+                          Deficient</span>
+                                            </div>
+
+                                            <div class="progress-bar progress-bar-success" style="width: {{job.percentVerified}}%" data-toggle="popover" data-placement="top" title="{{job.percentVerified | number:0}}% Verified">
+                                                <span>{{job.countVerified}}
+                          Verified</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Add Arrows -->
+                            <div ng-show="jobs.flag" class="swiper-button-prev swiper-button-white" style=""></div>
+                            <div ng-show="jobs.flag" class="swiper-button-next swiper-button-white" style=""></div>
+                        </div>
+
+                    </div>
+            </section>
+        </section>
+        <footer id="footer" style="position:relative; top:20px;">
+            Copyright &copy; 2016 Gorelick Brothers | HOMEREADY
+
+        </footer>
+    </ion-content>
+
+</ion-view>

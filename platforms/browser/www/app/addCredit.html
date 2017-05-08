@@ -1,0 +1,128 @@
+<!-- <ion-content style="background:inherit"> -->
+<!-- ADUSTMENT / ADD CREDIT OVERLAY MODAL THIS GOES WITH WORK ITEM ABOVE -->
+<div role="dialog" style="display: block;margin-top:7%">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{groupData.Group_Name__c}}:
+                     {{workItemData.Item_Name__c}}</h4>
+                <small>{{workItemData.Comments__c}}</small><br/>
+                <strong>Work Item Total Amount:</strong>
+                [{{workItemData.Amount__c | currency}}]
+            </div>
+            <div class="modal-body">
+                <p>
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <!-- PARTS AND LABOR TABLE -->
+                            <div class="table-responsive parts-labor-table-wrapper">
+                                <table class="table table-condensed parts-labor-table table-bordered">
+                                    <tbody>
+                                        <tr ng-repeat="product in workItemData.Products_Materials__r.records">
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a class="dropdown-toggle btn-link waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                                        {{product.Description__c}}
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <strong>Qty</strong>
+                                                {{product.Qty__c}}</td>
+                                            <td>
+                                                <strong>ea</strong>
+                                                ${{product.Price__c}}</td>
+                                            <td>
+                                                <strong>Labor</strong>
+                                                ${{product.Labor__c}}</td>
+                                            <td>${{product.Total__c}}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- END PARTS AND LABOR TABLE -->
+
+                            <table class="table  table-condensed table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Remaining</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>Amount to Pay</strong></br>
+                                        </td>
+                                        <td><input ng-init="credit_data.payable = workItemData.Credit__c" ng-model="credit_data.payable" ng-change="credit_data.remaining = workItemData.Amount__c - credit_data.payable"  class="input-mask adjustment-input" placeholder="$0.00" autocomplete="off"></td>
+                                        <td>
+                                            <select ng-model='form.percent' required ng-options='option.value as option.name for option in amounts' ng-change="credit_data.payable = (workItemData.Amount__c)*(form.percent)/100;credit_data.remaining = workItemData.Amount__c - credit_data.payable"></select>
+                                        </td>
+                                        <td ng-model="credit_data.remaining" ng-init="credit_data.remaining = workItemData.Net_Amount__c">${{credit_data.remaining | number: 2}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label id="CreditArea">Credit notes:
+                                <textarea ng-init="credit_data.creditNotes = workItemData.Credit_Notes__c" ng-model="credit_data.creditNotes" class="large-input" data-mask="Do not install the bifold door" placeholder=""></textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <div class="text-center row">
+                                <strong>Cost to Finish</strong>
+                                <br/><br/>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio radio-inline m-r-20">
+                                    <input ng-checked="workItemData.Followup_Type__c == 'Leave As Is'" type="radio" ng-model="credit_data.radio" name="inlineRadioOptions" value="leaveAsIs">
+                                    <i class="input-helper"></i>
+                                    Leave as is
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio radio-inline m-r-20">
+                                    <input ng-checked="workItemData.Followup_Type__c == 'Needs Bid'" type="radio" ng-model="credit_data.radio" name="inlineRadioOptions" value="needsBid">
+                                    <i class="input-helper"></i>
+                                    Needs bid
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio radio-inline m-r-20">
+                                    <input ng-checked="workItemData.Followup_Type__c == 'Expected Cost'" type="radio" ng-model="credit_data.radio" name="inlineRadioOptions" value="expectedCost">
+                                    <i class="input-helper"></i>
+                                    Expected Cost
+                                </label>
+                                <input ng-init="credit_data.Expected_Cost = workItemData.Remaining_Work_Cost_Est__c"  ng-model="credit_data.Expected_Cost" class="form-control input-mask" data-mask="$0.00"  placeholder="$0.00" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="clearCredit()" class="btn btn-link waves-effect">Clear</button>
+                <button type="button" ng-click="saveCredit(credit_data)" class="btn btn-link waves-effect">Save</button>
+                <button type="button" ng-click="closeCreditModal()" class="btn btn-link waves-effect">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </ion-content> -->

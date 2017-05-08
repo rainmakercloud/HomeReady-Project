@@ -1,0 +1,34 @@
+{
+  "name": "localforage-cordovasqlitedriver",
+  "version": "1.5.0",
+  "main": [
+    "dist/localforage-cordovasqlitedriver.js"
+  ],
+  "ignore": [
+    ".travis.yml",
+    "CONTRIBUTING.md",
+    "config.rb",
+    "Gemfile",
+    "Gemfile.lock",
+    "Rakefile",
+    "LICENSE",
+    "docs*",
+    "examples*",
+    "test*",
+    "site*"
+  ],
+  "dependencies": {
+    "localforage": "^1.4.0"
+  },
+  "homepage": "https://github.com/thgreasi/localForage-cordovaSQLiteDriver",
+  "_release": "1.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.5.0",
+    "commit": "ae7e0d28e4e3197e6b045dae105830e7f5376111"
+  },
+  "_source": "https://github.com/thgreasi/localForage-cordovaSQLiteDriver.git",
+  "_target": "^1.5.0",
+  "_originalSource": "localForage-cordovaSQLiteDriver",
+  "_direct": true
+}

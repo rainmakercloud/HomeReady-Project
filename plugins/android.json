@@ -1,0 +1,46 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.ionic.homeready"
+        }
+    }
+}

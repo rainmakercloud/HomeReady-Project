@@ -1,0 +1,18 @@
+{
+    "com.ezartech.ezar.snapshot": {
+        "source": {
+            "type": "local",
+            "path": "ezar/plugins/com.ezartech.ezar.snapshot"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.ezartech.ezar.videooverlay": {
+        "source": {
+            "type": "local",
+            "path": "ezar/plugins/com.ezartech.ezar.videooverlay"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}
